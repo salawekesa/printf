@@ -1,55 +1,49 @@
 #include "main.h"
 
 /**
- * _printf - formatted output conversion and print data.
- * @format: input string.
- *
- * Return: number of chars printed.
+ * _printf - replication of some of the features from C function printf()
+ * @format: character string of directives, flags, modifiers, & specifiers
+ * Description: This function uses the variable arguments functionality and is
+ * supposed to resemble printf().  Please review the README for more
+ * information on how it works.
+ * Return: number of characters printed
  */
 int _printf(const char *format, ...)
 {
-	unsigned int i = 0, len = 0, ibuf = 0;
-	va_list arguments;
-	int (*function)(va_list, char *, unsigned int);
-	char *buffer;
+	va_list args_list;
+	inventory_t *inv;
+	void (*temp_func)(inventory_t *);
 
-	va_start(arguments, format), buffer = malloc(sizeof(char) * 1024);
-	if (!format || !buffer || (format[i] == '%' && !format[i + 1]))
+	if (!format)
 		return (-1);
-	if (!format[i])
-		return (0);
-	for (i = 0; format && format[i]; i++)
+	va_start(args_list, format);
+	inv = build_inventory(&args_list, format);
+
+	while (inv && format[inv->i] && !inv->error)
 	{
-		if (format[i] == '%')
+		inv->c0 = format[inv->i];
+		if (inv->c0 != '%')
+			write_buffer(inv);
+		else
 		{
-			if (format[i + 1] == '\0')
-			{	print_buf(buffer, ibuf), free(buffer), va_end(arguments);
-				return (-1);
+			parse_specifiers(inv);
+			temp_func = match_specifier(inv);
+			if (temp_func)
+				temp_func(inv);
+			else if (inv->c1)
+			{
+				if (inv->flag)
+					inv->flag = 0;
+				write_buffer(inv);
 			}
 			else
-			{	function = get_print_func(format, i + 1);
-				if (function == NULL)
-				{
-					if (format[i + 1] == ' ' && !format[i + 2])
-						return (-1);
-					handl_buf(buffer, format[i], ibuf), len++, i--;
-				}
-				else
-				{
-					len += function(arguments, buffer, ibuf);
-					i += ev_print_func(format, i + 1);
-				}
-			} i++;
+			{
+				if (inv->space)
+					inv->buffer[--(inv->buf_index)] = '\0';
+				inv->error = 1;
+			}
 		}
-		else
-			handl_buf(buffer, format[i], ibuf), len++;
-		for (ibuf = len; ibuf > 1024; ibuf -= 1024)
-			;
+		inv->i++;
 	}
-<<<<<<< HEAD
-	print_buf(buffer, ibuf), free(buffer), va_end(arguments);
-	return (len);
-=======
 	return (end_func(inv));
->>>>>>> bf05bb303090e5c6c73b190ffd30a11d1969dfc2
 }
