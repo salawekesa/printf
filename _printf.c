@@ -45,3 +45,4 @@ int _printf(const char *format, ...)
 		inv->i++;
 	}
 	return (end_func(inv));
+}
