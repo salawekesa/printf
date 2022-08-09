@@ -111,5 +111,3 @@ void p_percent(inventory_t *inv);
 void p_binary(inventory_t *inv);
 
 #endif /* end include guard for header files */
-
-#endif
