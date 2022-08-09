@@ -1,6 +1,6 @@
 #include "main.h"
 /**
- *_printf - function to print anything
+ *_printf - function to prints aaccording to format
  *@format: types of argument passed to the function
  *
  *Return: number of cs printed
